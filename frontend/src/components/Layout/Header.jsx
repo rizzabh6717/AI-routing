@@ -6,9 +6,9 @@ import { Badge } from '../ui/badge';
 import { useWebSocket } from '../../hooks/useWebSocket';
 
 const Header = () => {
-  const [isConnected, setIsConnected] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [notifications, setNotifications] = useState(2);
+  const { isConnected } = useWebSocket();
 
   useEffect(() => {
     // Update time every second
@@ -16,17 +16,8 @@ const Header = () => {
       setCurrentTime(new Date());
     }, 1000);
 
-    // WebSocket connection monitoring
-    const unsubscribe = websocketService.subscribe('connection', (data) => {
-      setIsConnected(data.status === 'connected');
-    });
-
-    // Initial connection status
-    setIsConnected(websocketService.getConnectionStatus());
-
     return () => {
       clearInterval(timeInterval);
-      unsubscribe();
     };
   }, []);
 

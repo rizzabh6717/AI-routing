@@ -3,7 +3,7 @@ import { Bell, Search, User, Command, Wifi, WifiOff, Clock } from 'lucide-react'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
-import websocketService from '../../services/websocketService';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 const Header = () => {
   const [isConnected, setIsConnected] = useState(false);

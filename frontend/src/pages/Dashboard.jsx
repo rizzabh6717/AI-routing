@@ -13,64 +13,48 @@ import { mockRoutes } from '../data/mockData';
 
 const Dashboard = () => {
   const [currentPath, setCurrentPath] = useState('/');
-  const [incidents, setIncidents] = useState(mockIncidents);
-  const [vehicles, setVehicles] = useState(mockVehicles);
   const [routes] = useState(mockRoutes);
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
+  // API hooks
+  const { incidents, fetchIncidents, createIncident } = useIncidents();
+  const { vehicles, fetchVehicles, updateVehicleStatus } = useVehicles();
+  const { stats } = useSystemStats();
+  
+  // WebSocket hooks
+  const { isConnected: wsConnected } = useWebSocket();
+
+  // Load initial data
   useEffect(() => {
-    // Initialize WebSocket connection
-    websocketService.connect();
-
-    // Subscribe to real-time updates
-    const unsubscribeVehicleUpdates = websocketService.subscribe('vehicle_location', (data) => {
-      setVehicles(prevVehicles => 
-        prevVehicles.map(vehicle => 
-          vehicle.id === data.vehicleId 
-            ? {
-                ...vehicle,
-                location: {
-                  ...vehicle.location,
-                  coordinates: data.location.coordinates,
-                  heading: data.location.heading,
-                },
-                speed: data.location.speed || vehicle.speed,
-                lastUpdate: new Date(),
-              }
-            : vehicle
-        )
-      );
-    });
-
-    const unsubscribeRouteUpdates = websocketService.subscribe('route_optimization', (data) => {
-      setVehicles(prevVehicles => 
-        prevVehicles.map(vehicle => 
-          vehicle.id === data.vehicleId 
-            ? { ...vehicle, eta: data.newEta }
-            : vehicle
-        )
-      );
-    });
-
-    const unsubscribeIncidentUpdates = websocketService.subscribe('incident_status', (data) => {
-      setIncidents(prevIncidents => 
-        prevIncidents.map(incident => 
-          incident.id === data.incidentId 
-            ? { ...incident, status: data.status, lastUpdate: new Date() }
-            : incident
-        )
-      );
-    });
-
-    // Cleanup subscriptions
-    return () => {
-      unsubscribeVehicleUpdates();
-      unsubscribeRouteUpdates();
-      unsubscribeIncidentUpdates();
-      websocketService.disconnect();
+    const loadData = async () => {
+      try {
+        await fetchIncidents();
+        await fetchVehicles();
+        console.log('✅ Initial data loaded from API');
+      } catch (error) {
+        console.error('❌ Failed to load initial data:', error);
+      }
     };
-  }, []);
+
+    loadData();
+  }, [fetchIncidents, fetchVehicles]);
+
+  // Subscribe to real-time updates
+  useVehicleUpdates((data) => {
+    console.log('🚗 Vehicle update received:', data);
+    // Vehicle updates are handled by the API hooks
+  });
+
+  useIncidentUpdates((data) => {
+    console.log('🚨 Incident update received:', data);
+    // Incident updates are handled by the API hooks
+  });
+
+  useRouteUpdates((data) => {
+    console.log('🗺️ Route update received:', data);
+    // Route updates handled by API hooks
+  });
 
   const handleNavigate = (path) => {
     setCurrentPath(path);

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from typing import List, Optional
+from datetime import datetime
 
 from models.emergency import (
     Vehicle, VehicleCreate, VehicleStatus, VehicleStatusUpdate,

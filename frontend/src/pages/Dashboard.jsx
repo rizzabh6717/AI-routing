@@ -6,9 +6,10 @@ import LiveMap from '../components/Map/LiveMap';
 import IncidentPanel from '../components/Dashboard/IncidentPanel';
 import FleetPanel from '../components/Dashboard/FleetPanel';
 import NotificationPanel from '../components/Dashboard/NotificationPanel';
-import { mockIncidents, mockVehicles, mockRoutes } from '../data/mockData';
-import websocketService from '../services/websocketService';
+import { useIncidents, useVehicles, useSystemStats } from '../hooks/useApi';
+import { useWebSocket, useVehicleUpdates, useIncidentUpdates, useRouteUpdates } from '../hooks/useWebSocket';
 import { Toaster } from '../components/ui/toaster';
+import { mockRoutes } from '../data/mockData';
 
 const Dashboard = () => {
   const [currentPath, setCurrentPath] = useState('/');

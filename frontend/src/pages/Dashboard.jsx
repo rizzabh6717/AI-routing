@@ -72,8 +72,14 @@ const Dashboard = () => {
     }
   };
 
-  const handleCreateIncident = (newIncident) => {
-    setIncidents(prevIncidents => [newIncident, ...prevIncidents]);
+  const handleCreateIncident = async (incidentData) => {
+    try {
+      await createIncident(incidentData);
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (error) {
+      console.error('Failed to create incident:', error);
+    }
   };
 
   return (

@@ -100,9 +100,15 @@ const Dashboard = () => {
                   <h1 className="text-3xl font-bold text-white">Emergency Operations Command</h1>
                   <p className="text-slate-400 mt-1">Real-time incident management and AI-powered routing</p>
                 </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-slate-300">System Operational</span>
+                <div className="flex items-center space-x-4 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className={`h-2 w-2 rounded-full ${wsConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
+                    <span className="text-slate-300">WebSocket: {wsConnected ? 'Connected' : 'Disconnected'}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-slate-300">API: Operational</span>
+                  </div>
                 </div>
               </div>
 
